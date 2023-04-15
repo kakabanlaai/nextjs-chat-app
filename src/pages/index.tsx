@@ -1,7 +1,6 @@
 import Head from 'next/head';
 import { Inter } from 'next/font/google';
-import Sidebar from './components/Sidebar';
-import { useEffect, useState } from 'react';
+import Sidebar from '../../components/Sidebar';
 
 const inter = Inter({ subsets: ['latin'] });
 
