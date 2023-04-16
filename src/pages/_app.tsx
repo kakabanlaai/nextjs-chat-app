@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import Loading from '../../components/Loading';
 import { auth, db } from '../../config/firebase';
+import '../styles/globalStyle.css';
 import Login from './login';
 
 export default function App({ Component, pageProps }: AppProps) {

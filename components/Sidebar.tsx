@@ -1,6 +1,4 @@
-import ChatIcon from '@mui/icons-material/Chat';
 import LogoutIcon from '@mui/icons-material/Logout';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Avatar,
@@ -157,12 +155,12 @@ const Sidebar = () => {
         </Tooltip>
 
         <div>
-          <IconButton>
+          {/* <IconButton>
             <ChatIcon />
           </IconButton>
           <IconButton>
             <MoreVertIcon />
-          </IconButton>
+          </IconButton> */}
           <IconButton onClick={logout}>
             <LogoutIcon />
           </IconButton>

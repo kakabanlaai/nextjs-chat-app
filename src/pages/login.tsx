@@ -1,11 +1,10 @@
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import Button from '@mui/material/Button';
 import Head from 'next/head';
-import styled from 'styled-components';
-import Image from 'next/image';
-import { useAuthState, useSignInWithGoogle } from 'react-firebase-hooks/auth';
-import { auth } from '../../config/firebase';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { useRouter } from 'next/router';
+import { useAuthState, useSignInWithGoogle } from 'react-firebase-hooks/auth';
+import styled from 'styled-components';
+import { auth } from '../../config/firebase';
 
 const StyledContainer = styled.div`
   height: 100vh;
@@ -50,7 +49,10 @@ const Login = () => {
           <WhatsAppIcon style={{ width: '150px', height: '150px' }} />
         </StyledLogoWrapper>
 
-        <Button variant="outlined" onClick={signIn}>
+        <Button
+          variant="outlined"
+          onClick={signIn}
+        >
           Sign in with Google
         </Button>
       </StyledLoginContainer>
