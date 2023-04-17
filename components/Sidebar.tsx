@@ -17,12 +17,14 @@ import {
 import EmailValidator from 'email-validator';
 import { signOut } from 'firebase/auth';
 import { addDoc, collection, query, where } from 'firebase/firestore';
-import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import styled from 'styled-components';
 import { auth, db } from '../config/firebase';
 import { Conversation } from '../types';
+import { getRecipientEmail } from '../utils/getRecipientEmail';
 import ConversationItem from './ConversationItem';
 
 const StyledContainer = styled.div`
@@ -80,6 +82,7 @@ const StyledAvatar = styled(Avatar)`
 `;
 
 const Sidebar = () => {
+  const router = useRouter();
   const [loggedInUser, _loading, _error] = useAuthState(auth);
   const [loading, setLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -87,6 +90,16 @@ const Sidebar = () => {
   const [isOpenNewConversationDialog, setIsOpenNewConversationDialog] =
     useState(false);
   const [recipientEmail, setRecipientEmail] = useState('');
+  const [searchText, setSearchText] = useState('');
+  const [searchTextTerm, setSearchTextTerm] = useState('');
+
+  //debouncing search
+  useEffect(() => {
+    const filterData = setTimeout(() => {
+      setSearchText(searchTextTerm);
+    }, 200);
+    return () => clearTimeout(filterData);
+  }, [searchTextTerm]);
 
   const toggleNewConversationDialog = (isOpen: boolean) => {
     setIsOpenNewConversationDialog(isOpen);
@@ -118,22 +131,42 @@ const Sidebar = () => {
 
   const isInvitingSelf = recipientEmail === loggedInUser?.email;
 
+  const notifyError = (message: string) => {
+    setErrorMessage(message);
+    setHasError(true);
+    setLoading(false);
+  };
+
   const createConversation = async () => {
     if (!recipientEmail) return;
     setLoading(true);
 
-    if (
-      EmailValidator.validate(recipientEmail) &&
-      !isInvitingSelf &&
-      !isConversationAlreadyExists(recipientEmail)
-    ) {
-      await addDoc(collection(db, 'conversations'), {
-        users: [loggedInUser?.email, recipientEmail],
-      });
+    // if (
+    //   EmailValidator.validate(recipientEmail) &&
+    //   !isInvitingSelf &&
+    //   !isConversationAlreadyExists(recipientEmail)
+    // )
+
+    if (!EmailValidator.validate(recipientEmail)) {
+      notifyError('Invalid email');
+      return;
+    }
+    if (isInvitingSelf) {
+      notifyError('Can not create conversation with yourself');
+      return;
+    }
+    if (isConversationAlreadyExists(recipientEmail)) {
+      router.push(
+        `/conversations/${isConversationAlreadyExists(recipientEmail)?.id}`
+      );
       closeNewConversationDialog();
+      return;
     }
 
-    setLoading(false);
+    await addDoc(collection(db, 'conversations'), {
+      users: [loggedInUser?.email, recipientEmail],
+    });
+    closeNewConversationDialog();
   };
 
   const logout = async () => {
@@ -171,6 +204,10 @@ const Sidebar = () => {
         <StyledSearchInput
           placeholder="Search in conversations"
           type="text"
+          value={searchTextTerm}
+          onChange={(event) => {
+            setSearchTextTerm(event.target.value);
+          }}
         />
       </StyledSearch>
       <StyledSidebarButton
@@ -183,13 +220,21 @@ const Sidebar = () => {
 
       {/*List of conversation*/}
 
-      {conversationsSnapshot?.docs.map((conversation) => (
-        <ConversationItem
-          key={conversation.id}
-          id={conversation.id}
-          conversationUsers={(conversation.data() as Conversation).users}
-        />
-      ))}
+      {conversationsSnapshot?.docs.map((conversation) => {
+        const recipientEmail = getRecipientEmail(
+          (conversation.data() as Conversation).users,
+          loggedInUser
+        );
+        if (!searchText || recipientEmail?.includes(searchText)) {
+          return (
+            <ConversationItem
+              key={conversation.id}
+              id={conversation.id}
+              conversationUsers={(conversation.data() as Conversation).users}
+            />
+          );
+        }
+      })}
 
       <Dialog
         open={isOpenNewConversationDialog}

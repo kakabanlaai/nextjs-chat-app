@@ -11,10 +11,16 @@ export interface AppUser {
   photoUrl: string;
 }
 
+export enum MessageType {
+  Text,
+  Audio,
+}
+
 export interface IMessage {
   id: string;
   conversation_id: string;
   text: string;
+  audioUrl: string;
   send_at: string;
   user: string;
 }

@@ -43,7 +43,13 @@ const Message = ({ message }: { message: IMessage }) => {
 
   return (
     <MessageType>
-      {message.text}
+      {!!message.text && message.text}
+      {!!message.audioUrl && (
+        <audio
+          controls
+          src={message.audioUrl}
+        />
+      )}
       <StyledTimestamp>{message.send_at}</StyledTimestamp>
     </MessageType>
   );
