@@ -230,6 +230,7 @@ const Sidebar = () => {
             <ConversationItem
               key={conversation.id}
               id={conversation.id}
+              selected={conversation.id === (router.query as { id: string }).id}
               conversationUsers={(conversation.data() as Conversation).users}
             />
           );

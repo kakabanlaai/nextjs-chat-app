@@ -19,9 +19,11 @@ const StyledContainer = styled.div`
 const ConversationItem = ({
   id,
   conversationUsers,
+  selected = false,
 }: {
   id: string;
   conversationUsers: Conversation['users'];
+  selected: boolean;
 }) => {
   const { recipient, recipientEmail } = useRecipient(conversationUsers);
   const router = useRouter();
@@ -30,7 +32,10 @@ const ConversationItem = ({
     router.push(`/conversations/${id}`);
   };
   return (
-    <StyledContainer onClick={handleSelectConversation}>
+    <StyledContainer
+      onClick={handleSelectConversation}
+      style={selected ? { backgroundColor: '#e9eaeb' } : {}}
+    >
       <RecipientAvatar
         recipient={recipient}
         recipientEmail={recipientEmail}

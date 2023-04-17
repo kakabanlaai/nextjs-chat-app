@@ -1,7 +1,5 @@
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 import CancelIcon from '@mui/icons-material/Cancel';
 import MicIcon from '@mui/icons-material/Mic';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SendIcon from '@mui/icons-material/Send';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
 import {
@@ -314,14 +312,14 @@ const ConversationScreen = ({
           {!recipient && <span>Unregistered user</span>}
         </StyledHeaderInfo>
 
-        <StyledHeaderIcons>
+        {/* <StyledHeaderIcons>
           <IconButton>
             <AttachFileIcon />
           </IconButton>
           <IconButton>
             <MoreVertIcon />
           </IconButton>
-        </StyledHeaderIcons>
+        </StyledHeaderIcons> */}
       </StyledRecipientHeader>
 
       <StyledMessageContainer>
